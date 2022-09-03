@@ -1,0 +1,11 @@
+"use strict";
+exports.__esModule = true;
+var express_1 = require("express");
+var createCardController_1 = require("../controllers/createCardController");
+var cardStatusController_1 = require("../controllers/cardStatusController");
+var cardRouter = (0, express_1.Router)();
+cardRouter.post('/card/create', createCardController_1.createCard);
+cardRouter.post('/card/:id/activate', cardStatusController_1.activateCard);
+cardRouter.put('/card/:id/block', cardStatusController_1.blockCard);
+cardRouter.put('/card/:id/unlock', cardStatusController_1.unlockCard);
+exports["default"] = cardRouter;
