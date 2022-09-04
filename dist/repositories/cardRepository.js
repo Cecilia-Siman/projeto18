@@ -49,14 +49,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 exports.remove = exports.update = exports.insert = exports.findByCardDetails = exports.findByTypeAndEmployeeId = exports.findById = exports.find = void 0;
-var postgres_js_1 = __importDefault(require("../database/postgres.js"));
-var sqlUtils_js_1 = require("../utils/sqlUtils.js");
+var postgres_1 = __importDefault(require("../database/postgres"));
+var sqlUtils_1 = require("../utils/sqlUtils");
 function find() {
     return __awaiter(this, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, postgres_js_1["default"].query("SELECT * FROM cards")];
+                case 0: return [4 /*yield*/, postgres_1["default"].query("SELECT * FROM cards")];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result.rows];
@@ -70,7 +70,7 @@ function findById(id) {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, postgres_js_1["default"].query("SELECT * FROM cards WHERE id=$1", [id])];
+                case 0: return [4 /*yield*/, postgres_1["default"].query("SELECT * FROM cards WHERE id=$1", [id])];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result.rows[0]];
@@ -84,7 +84,7 @@ function findByTypeAndEmployeeId(type, employeeId) {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, postgres_js_1["default"].query("SELECT * FROM cards WHERE type=$1 AND \"employeeId\"=$2", [type, employeeId])];
+                case 0: return [4 /*yield*/, postgres_1["default"].query("SELECT * FROM cards WHERE type=$1 AND \"employeeId\"=$2", [type, employeeId])];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result.rows[0]];
@@ -98,7 +98,7 @@ function findByCardDetails(number, cardholderName, expirationDate) {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, postgres_js_1["default"].query(" SELECT \n        * \n      FROM cards \n      WHERE number=$1 AND \"cardholderName\"=$2 AND \"expirationDate\"=$3", [number, cardholderName, expirationDate])];
+                case 0: return [4 /*yield*/, postgres_1["default"].query(" SELECT \n        * \n      FROM cards \n      WHERE number=$1 AND \"cardholderName\"=$2 AND \"expirationDate\"=$3", [number, cardholderName, expirationDate])];
                 case 1:
                     result = _a.sent();
                     return [2 /*return*/, result.rows[0]];
@@ -112,7 +112,7 @@ function insert(cardData) {
         var employeeId, number, cardholderName, securityCode, expirationDate, password, isVirtual, originalCardId, isBlocked, type;
         return __generator(this, function (_a) {
             employeeId = cardData.employeeId, number = cardData.number, cardholderName = cardData.cardholderName, securityCode = cardData.securityCode, expirationDate = cardData.expirationDate, password = cardData.password, isVirtual = cardData.isVirtual, originalCardId = cardData.originalCardId, isBlocked = cardData.isBlocked, type = cardData.type;
-            postgres_js_1["default"].query("\n    INSERT INTO cards (\"employeeId\", number, \"cardholderName\", \"securityCode\",\n      \"expirationDate\", password, \"isVirtual\", \"originalCardId\", \"isBlocked\", type)\n    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)\n  ", [
+            postgres_1["default"].query("\n    INSERT INTO cards (\"employeeId\", number, \"cardholderName\", \"securityCode\",\n      \"expirationDate\", password, \"isVirtual\", \"originalCardId\", \"isBlocked\", type)\n    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)\n  ", [
                 employeeId,
                 number,
                 cardholderName,
@@ -133,11 +133,11 @@ function update(id, cardData) {
     return __awaiter(this, void 0, void 0, function () {
         var _a, cardColumns, cardValues;
         return __generator(this, function (_b) {
-            _a = (0, sqlUtils_js_1.mapObjectToUpdateQuery)({
+            _a = (0, sqlUtils_1.mapObjectToUpdateQuery)({
                 object: cardData,
                 offset: 2
             }), cardColumns = _a.objectColumns, cardValues = _a.objectValues;
-            postgres_js_1["default"].query("\n    UPDATE cards\n      SET ".concat(cardColumns, "\n    WHERE $1=id\n  "), __spreadArray([id], cardValues, true));
+            postgres_1["default"].query("\n    UPDATE cards\n      SET ".concat(cardColumns, "\n    WHERE $1=id\n  "), __spreadArray([id], cardValues, true));
             return [2 /*return*/];
         });
     });
@@ -146,7 +146,7 @@ exports.update = update;
 function remove(id) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            postgres_js_1["default"].query("DELETE FROM cards WHERE id=$1", [id]);
+            postgres_1["default"].query("DELETE FROM cards WHERE id=$1", [id]);
             return [2 /*return*/];
         });
     });

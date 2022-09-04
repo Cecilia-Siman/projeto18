@@ -47,7 +47,7 @@ function activateCard(req, res) {
                 password = req.body.password;
             }
             catch (error) {
-                console.log(error);
+                return [2 /*return*/, res.sendStatus(500)];
             }
             return [2 /*return*/];
         });
@@ -64,6 +64,7 @@ function blockCard(req, res) {
             }
             catch (error) {
                 console.log(error);
+                return [2 /*return*/, res.sendStatus(500)];
             }
             return [2 /*return*/];
         });
@@ -80,6 +81,7 @@ function unlockCard(req, res) {
             }
             catch (error) {
                 console.log(error);
+                return [2 /*return*/, res.sendStatus(500)];
             }
             return [2 /*return*/];
         });
