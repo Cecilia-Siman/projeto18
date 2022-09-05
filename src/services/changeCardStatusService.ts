@@ -3,22 +3,20 @@ import { isValid, isActive } from "./validCardService";
 import { findById, update } from "../repositories/cardRepository";
 
 export async function activatingCard(id: number, password: any, cvc: string){
-    try {
     const valid = await isValid(id);
     if (!valid){
-        throw {code: 'card not valid'};
+        throw {code:'Not Valid', message:'Card not valid'};
     }
     const active = await isActive(id);
-    if(active){
-        throw {code: 'card already active'};
+    if(!active){
+        throw {code:'Not Valid', message: 'Card not active'};
     }
     const cardData = await findById(id);
     if (cardData.securityCode !== cvc){
-        throw {code: 'invalid security code'};
+        throw {code:'Unauthorized', message:'Security code not valid'}
     }
     if (password.length !== 4 || isNaN(password)){
-        console.log('password not valid');
-        throw {code: 'password not valid'};
+        throw {code:'Unauthorized', message:'Password not valid'};
     }
     const updateData = {
         password,
@@ -26,39 +24,36 @@ export async function activatingCard(id: number, password: any, cvc: string){
     }
     await update(id, updateData);
     return;
-    }
-    catch(error){
-        return error;
-    }
 
 }
 
 export async function changingCardStatus(id: number, password: string, newStatus:boolean){
-    try {
     const valid = await isValid(id);
     if (!valid){
-        throw {code: 'card not valid'};
+        throw {code:'Not Valid', message:'Card not valid'};
     }
     const active = await isActive(id);
     if(!active){
-        throw {code: 'card not active'};
+        throw {code:'Not Valid', message: 'Card not active'};
     }
     const cardData = await findById(id);
     if(cardData.isBlocked === newStatus){
-        throw {code: 'card\'s current state already'};
+        if (newStatus === true){
+            throw {code:'Bad request', message:'Card\'s already blocked'};
+        }
+        else{
+            throw {code:'Bad request', message:'Card\'s already unlocked'};
+        }
+        
     }
 
     if (cardData.password !== password){
-        throw {code: 'incorrect password'};
+        
+        throw {code:'Unauthorized', message:'Password not valid'};
     }
     const updateData = {
         isBlocked: newStatus
     }
     await update(id, updateData);
     return;
-    }
-    catch(error){
-        return error;
-    }
-
 }

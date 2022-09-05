@@ -2,43 +2,35 @@ import { findById } from "../repositories/employeeRepository"
 import { findByTypeAndEmployeeId, insert } from "../repositories/cardRepository";
 import { TransactionTypes, CardInsertData } from "../repositories/cardRepository";
 import { faker } from '@faker-js/faker';
-//import { number, string } from "joi";
 
 export async function cardData(employeeId: number,cardType: TransactionTypes){
-    try{
-        const employee = await findById(employeeId);
-        if (!employee){
-            throw {code: "Employee not registered"};
-        }
-        const cardTest = await findByTypeAndEmployeeId(cardType,employeeId);
-        if(cardTest){
-            throw {code: "Card already registered for employee"};
-        }
-        const cardNumber: string = faker.finance.account();
-        const cvc: string = faker.finance.creditCardCVV();
-        const date = expirationDate();
-        const name = employeeName(employee.fullName);
-        
-        const newCardData: CardInsertData = {
-            employeeId,
-            number: cardNumber,
-            cardholderName: name,
-            securityCode: cvc,
-            expirationDate: date,
-            password:"",
-            isVirtual: false,
-            originalCardId: null,
-            isBlocked: true,
-            type: cardType
-        };
-        await insert(newCardData);
-        return;
-
+    const employee = await findById(employeeId);
+    if (!employee){
+        throw {code:"Unauthorized", message:"Employee not registered"};
     }
-    catch(error){
-        console.log(error);
-        return;
+    const cardTest = await findByTypeAndEmployeeId(cardType,employeeId);
+    if(cardTest){
+        throw {code:"Unauthorized", message:"Card already registered for employee"};
     }
+    const cardNumber: string = faker.finance.account();
+    const cvc: string = faker.finance.creditCardCVV();
+    const date = expirationDate();
+    const name = employeeName(employee.fullName);
+    
+    const newCardData: CardInsertData = {
+        employeeId,
+        number: cardNumber,
+        cardholderName: name,
+        securityCode: cvc,
+        expirationDate: date,
+        password:"",
+        isVirtual: false,
+        originalCardId: null,
+        isBlocked: true,
+        type: cardType
+    };
+    await insert(newCardData);
+    return;
 
 }
 

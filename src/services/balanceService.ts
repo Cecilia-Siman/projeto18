@@ -5,11 +5,11 @@ import { isValid, isActive } from "./validCardService";
 export async function balanceCalculus(cardId:number) {
     const valid = await isValid(cardId);
     if (!valid){
-        throw {code: 'card not valid'};
+        throw {code:'Not Valid', message:'Card not valid'};
     }
     const active = await isActive(cardId);
     if(!active){
-        throw {code: 'card not active'};
+        throw {code:'Not Valid', message: 'Card not active'};
     }
     const payments = await findPaymentByCardId(cardId);
     const recharges = await findRechargeByCardId(cardId);

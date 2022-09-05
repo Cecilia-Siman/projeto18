@@ -18,7 +18,6 @@ export async function isValid(cardId: number){
             const thisMonth:number = Number(currentMonth);  
             const thisYear: number = Number(currentYear);
             if (currentYear < expireYear){
-                console.log('está válido');
                 return true;
             }
             if (currentYear > expireYear){
@@ -29,7 +28,6 @@ export async function isValid(cardId: number){
                 console.log('não está válido');
                 return false;
             } else{
-                console.log('está válido');
                 return true;
             }
 
@@ -43,11 +41,9 @@ export async function isValid(cardId: number){
 export async function isActive(id: number){
     const card = await findById(id);
     if (card.password){
-        console.log('está ativo');
         return true;
     }
     else{
-        console.log('não está ativo');
         return false;
     }
 

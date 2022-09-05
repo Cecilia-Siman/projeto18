@@ -5,34 +5,28 @@ import { insert } from "../repositories/paymentRepository";
 import { balanceCalculus } from "./balanceService";
 
 export async function purchasePOS(cardId: number, password: string, shopId: number, amount: number){
-    try{
     const valid = await isValid(cardId);
     if (!valid){
-        throw {code: 'card not valid'};
+        throw {code:'Not Valid', message:'Card not valid'};
     }
     const active = await isActive(cardId);
     if(!active){
-        throw {code: 'card not active'};
+        throw {code:'Not Valid', message: 'Card not active'};
     }
     const cardData = await findById(cardId);
     const businessData = await findBusinessById(shopId);
     if(password !== cardData.password){
-        throw('Password not valid');
+        throw {code:'Unauthorized', message:'Password not valid'};
     }
     if (cardData.type !== businessData.type){
-        throw {code: 'Card type does not correspond'}
+        throw {code:'Unauthorized', message:'Card type does not correspond to business type'}
     }
     let { balance } = await balanceCalculus(cardId);
     if (amount > balance){
-        throw {code: 'balance insuficient'};
+        throw {code:'Unauthorized', message:'Balance insuficient'};
     }
     const paymentData = { cardId, businessId: shopId, amount};
     await insert(paymentData);
-    return;
-    }
-    catch(error){
-        return error;
-    }
-    
+   
 
 }

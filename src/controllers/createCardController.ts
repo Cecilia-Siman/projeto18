@@ -2,18 +2,15 @@ import { any } from "joi";
 import { Request, Response } from "express";
 import { cardData } from "../services/createCardService";
 import { TransactionTypes } from "../repositories/cardRepository";
+import createSchema from "../schemas/createSchema";
 
 export async function createCard(req: Request,res: Response){
-    try{
-        const companyData = res.locals.companyData;
-        const employeeId: number = Number(req.body.employeeId);
-        const cardType: TransactionTypes = req.body.cardType;
-        cardData(employeeId,cardType);
-        res.sendStatus(201);
+    const validation = createSchema.validate(req.body);
+    if (validation.error) {
+        return res.status(422).send(validation.error.details);
     }
-    catch(error){
-        console.log(error);
-        res.sendStatus(500);
-    }
-
+    const employeeId: number = Number(req.body.employeeId);
+    const cardType: TransactionTypes = req.body.cardType;
+    await cardData(employeeId,cardType);
+    res.send('card created').status(201);
 }
