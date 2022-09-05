@@ -2,7 +2,7 @@ import { cardData } from "./createCardService";
 import { isValid, isActive } from "./validCardService";
 import { findById, update } from "../repositories/cardRepository";
 
-export async function activatingCard(id: number, password: string, cvc: string){
+export async function activatingCard(id: number, password: any, cvc: string){
     try {
     const valid = await isValid(id);
     if (!valid){

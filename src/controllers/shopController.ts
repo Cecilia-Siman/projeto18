@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
+import { purchasePOS } from "../services/shopService";
 
 export async function purchase(req: Request, res: Response) {
-    const cardId = res.locals.cardId;
     try{
+        const cardId: number = Number(req.body.cardId);
         const password: string = req.body.password;
         const shopId: number = Number(req.body.shopId);
-        const price: number = Number(req.body.price);
+        const amount: number = Number(req.body.amount);
+        await purchasePOS(cardId,password,shopId,amount);
+        res.sendStatus(200);
     }
     catch(error){
         console.log(error);
