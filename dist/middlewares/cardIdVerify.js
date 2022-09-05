@@ -37,36 +37,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.cardIdVerify = void 0;
-var cardRepository_1 = require("../repositories/cardRepository");
 function cardIdVerify(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var cardId, card, error_1;
+        var cardId;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    cardId = Number(req.params.id);
-                    res.locals.cardId = cardId;
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4 /*yield*/, (0, cardRepository_1.findById)(cardId)];
-                case 2:
-                    card = _a.sent();
-                    if (!card) {
-                        return [2 /*return*/, res.sendStatus(404)];
-                    }
-                    else {
-                        res.send(card);
-                    }
-                    next();
-                    return [3 /*break*/, 4];
-                case 3:
-                    error_1 = _a.sent();
-                    console.log(error_1);
-                    next();
-                    return [3 /*break*/, 4];
-                case 4: return [2 /*return*/];
+            cardId = Number(req.params.id);
+            res.locals.cardId = cardId;
+            if (!cardId) {
+                return [2 /*return*/, res.sendStatus(404)];
             }
+            next();
+            return [2 /*return*/];
         });
     });
 }

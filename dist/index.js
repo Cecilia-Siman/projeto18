@@ -29,12 +29,15 @@ exports.__esModule = true;
 var cors_1 = __importDefault(require("cors"));
 var express_1 = __importStar(require("express"));
 var dotenv_1 = __importDefault(require("dotenv"));
+require("express-async-errors");
 var routes_1 = __importDefault(require("./routes"));
+var errorHandler_1 = __importDefault(require("./middlewares/errorHandler"));
 var app = (0, express_1["default"])();
 dotenv_1["default"].config();
 app.use((0, cors_1["default"])());
 app.use((0, express_1.json)());
 app.use(routes_1["default"]);
+app.use(errorHandler_1["default"]);
 var PORT = process.env.PORT || 4000;
 app.listen(process.env.PORT, function () {
     console.log("Server running on port " + process.env.PORT);

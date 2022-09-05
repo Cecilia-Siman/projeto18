@@ -35,23 +35,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
-exports.findBusinessById = void 0;
-var postgres_1 = __importDefault(require("../database/postgres"));
-function findBusinessById(id) {
+exports.cardBalance = void 0;
+var balanceService_1 = require("../services/balanceService");
+function cardBalance(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var result;
+        var cardId, objReturn;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, postgres_1["default"].query("SELECT * FROM businesses WHERE id=$1", [id])];
+                case 0:
+                    cardId = Number(res.locals.cardId);
+                    return [4 /*yield*/, (0, balanceService_1.balanceCalculus)(cardId)];
                 case 1:
-                    result = _a.sent();
-                    return [2 /*return*/, result.rows[0]];
+                    objReturn = _a.sent();
+                    res.send(objReturn).status(200);
+                    return [2 /*return*/];
             }
         });
     });
 }
-exports.findBusinessById = findBusinessById;
+exports.cardBalance = cardBalance;

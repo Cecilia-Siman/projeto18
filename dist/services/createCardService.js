@@ -35,23 +35,71 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
-exports.findBusinessById = void 0;
-var postgres_1 = __importDefault(require("../database/postgres"));
-function findBusinessById(id) {
+exports.cardData = void 0;
+var employeeRepository_1 = require("../repositories/employeeRepository");
+var cardRepository_1 = require("../repositories/cardRepository");
+var faker_1 = require("@faker-js/faker");
+function cardData(employeeId, cardType) {
     return __awaiter(this, void 0, void 0, function () {
-        var result;
+        var employee, cardTest, cardNumber, cvc, date, name, newCardData;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, postgres_1["default"].query("SELECT * FROM businesses WHERE id=$1", [id])];
+                case 0: return [4 /*yield*/, (0, employeeRepository_1.findById)(employeeId)];
                 case 1:
-                    result = _a.sent();
-                    return [2 /*return*/, result.rows[0]];
+                    employee = _a.sent();
+                    if (!employee) {
+                        throw { code: "Unauthorized", message: "Employee not registered" };
+                    }
+                    return [4 /*yield*/, (0, cardRepository_1.findByTypeAndEmployeeId)(cardType, employeeId)];
+                case 2:
+                    cardTest = _a.sent();
+                    if (cardTest) {
+                        throw { code: "Unauthorized", message: "Card already registered for employee" };
+                    }
+                    cardNumber = faker_1.faker.finance.account();
+                    cvc = faker_1.faker.finance.creditCardCVV();
+                    date = expirationDate();
+                    name = employeeName(employee.fullName);
+                    newCardData = {
+                        employeeId: employeeId,
+                        number: cardNumber,
+                        cardholderName: name,
+                        securityCode: cvc,
+                        expirationDate: date,
+                        password: "",
+                        isVirtual: false,
+                        originalCardId: null,
+                        isBlocked: true,
+                        type: cardType
+                    };
+                    return [4 /*yield*/, (0, cardRepository_1.insert)(newCardData)];
+                case 3:
+                    _a.sent();
+                    return [2 /*return*/];
             }
         });
     });
 }
-exports.findBusinessById = findBusinessById;
+exports.cardData = cardData;
+function expirationDate() {
+    var date = new Date();
+    var month = date.getMonth();
+    var year = String(date.getFullYear());
+    year = year[2] + year[3];
+    var expirationYear = Number(year) + 5;
+    var returnDate = month + "/" + expirationYear;
+    return returnDate;
+}
+function employeeName(employeeName) {
+    var nameArray = employeeName.split(" ");
+    var middlenames = "";
+    for (var i = 1; i < nameArray.length - 1; i++) {
+        var midName = nameArray[i];
+        if (midName.length > 2) {
+            middlenames += midName[0] + " ";
+        }
+    }
+    var returnName = nameArray[0].toUpperCase() + " " + middlenames + nameArray[nameArray.length - 1].toUpperCase();
+    return returnName;
+}

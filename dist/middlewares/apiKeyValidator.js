@@ -37,10 +37,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.apiKeyVerify = void 0;
+var companyRepository_1 = require("../repositories/companyRepository");
 function apiKeyVerify(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
+        var apikey, companyData, error_1;
         return __generator(this, function (_a) {
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0:
+                    apikey = String(req.headers.apikey);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, (0, companyRepository_1.findByApiKey)(apikey)];
+                case 2:
+                    companyData = _a.sent();
+                    if (!companyData) {
+                        return [2 /*return*/, res.sendStatus(404)];
+                    }
+                    else {
+                        res.locals.companyData = companyData;
+                    }
+                    next();
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _a.sent();
+                    res.sendStatus(500);
+                    next();
+                    return [3 /*break*/, 4];
+                case 4:
+                    next();
+                    return [2 /*return*/];
+            }
         });
     });
 }

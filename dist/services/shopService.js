@@ -35,23 +35,55 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
-exports.findBusinessById = void 0;
-var postgres_1 = __importDefault(require("../database/postgres"));
-function findBusinessById(id) {
+exports.purchasePOS = void 0;
+var cardRepository_1 = require("../repositories/cardRepository");
+var businessRepository_1 = require("../repositories/businessRepository");
+var validCardService_1 = require("./validCardService");
+var paymentRepository_1 = require("../repositories/paymentRepository");
+var balanceService_1 = require("./balanceService");
+function purchasePOS(cardId, password, shopId, amount) {
     return __awaiter(this, void 0, void 0, function () {
-        var result;
+        var valid, active, cardData, businessData, balance, paymentData;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, postgres_1["default"].query("SELECT * FROM businesses WHERE id=$1", [id])];
+                case 0: return [4 /*yield*/, (0, validCardService_1.isValid)(cardId)];
                 case 1:
-                    result = _a.sent();
-                    return [2 /*return*/, result.rows[0]];
+                    valid = _a.sent();
+                    if (!valid) {
+                        throw { code: 'Not Valid', message: 'Card not valid' };
+                    }
+                    return [4 /*yield*/, (0, validCardService_1.isActive)(cardId)];
+                case 2:
+                    active = _a.sent();
+                    if (!active) {
+                        throw { code: 'Not Valid', message: 'Card not active' };
+                    }
+                    return [4 /*yield*/, (0, cardRepository_1.findById)(cardId)];
+                case 3:
+                    cardData = _a.sent();
+                    return [4 /*yield*/, (0, businessRepository_1.findBusinessById)(shopId)];
+                case 4:
+                    businessData = _a.sent();
+                    if (password !== cardData.password) {
+                        throw { code: 'Unauthorized', message: 'Password not valid' };
+                    }
+                    if (cardData.type !== businessData.type) {
+                        throw { code: 'Unauthorized', message: 'Card type does not correspond to business type' };
+                    }
+                    return [4 /*yield*/, (0, balanceService_1.balanceCalculus)(cardId)];
+                case 5:
+                    balance = (_a.sent()).balance;
+                    if (amount > balance) {
+                        throw { code: 'Unauthorized', message: 'Balance insuficient' };
+                    }
+                    paymentData = { cardId: cardId, businessId: shopId, amount: amount };
+                    return [4 /*yield*/, (0, paymentRepository_1.insert)(paymentData)];
+                case 6:
+                    _a.sent();
+                    return [2 /*return*/];
             }
         });
     });
 }
-exports.findBusinessById = findBusinessById;
+exports.purchasePOS = purchasePOS;

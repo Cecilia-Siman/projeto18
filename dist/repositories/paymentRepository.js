@@ -39,9 +39,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.insert = exports.findByCardId = void 0;
+exports.insert = exports.findPaymentByCardId = void 0;
 var postgres_1 = __importDefault(require("../database/postgres"));
-function findByCardId(cardId) {
+function findPaymentByCardId(cardId) {
     return __awaiter(this, void 0, void 0, function () {
         var result;
         return __generator(this, function (_a) {
@@ -54,7 +54,7 @@ function findByCardId(cardId) {
         });
     });
 }
-exports.findByCardId = findByCardId;
+exports.findPaymentByCardId = findPaymentByCardId;
 function insert(paymentData) {
     return __awaiter(this, void 0, void 0, function () {
         var cardId, businessId, amount;

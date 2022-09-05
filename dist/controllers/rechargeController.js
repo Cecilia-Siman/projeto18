@@ -35,20 +35,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
 exports.rechargeCard = void 0;
+var rechargeService_1 = require("../services/rechargeService");
+var amountSchema_1 = __importDefault(require("../schemas/amountSchema"));
 function rechargeCard(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var cardId, amount;
+        var cardId, validation, amount;
         return __generator(this, function (_a) {
-            cardId = res.locals.cardId;
-            try {
-                amount = Number(req.body.amount);
+            switch (_a.label) {
+                case 0:
+                    cardId = res.locals.cardId;
+                    validation = amountSchema_1["default"].validate(req.body);
+                    if (validation.error) {
+                        return [2 /*return*/, res.status(422).send(validation.error.details)];
+                    }
+                    amount = Number(req.body.amount);
+                    return [4 /*yield*/, (0, rechargeService_1.recharge)(cardId, amount)];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, res.sendStatus(201)];
             }
-            catch (error) {
-                console.log(error);
-            }
-            return [2 /*return*/];
         });
     });
 }
