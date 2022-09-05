@@ -5,7 +5,6 @@ export async function apiKeyVerify(req:Request,res:Response,next:NextFunction) {
     const apikey: string = String(req.headers.apikey);
     try{
         const companyData = await findByApiKey(apikey); 
-        console.log(companyData);
         if (!companyData){
             return res.sendStatus(404);
         }
