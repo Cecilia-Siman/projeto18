@@ -9,7 +9,7 @@ export async function createCard(req: Request,res: Response){
         const employeeId: number = Number(req.body.employeeId);
         const cardType: TransactionTypes = req.body.cardType;
         cardData(employeeId,cardType);
-        res.sendStatus(200);
+        res.sendStatus(201);
     }
     catch(error){
         console.log(error);
